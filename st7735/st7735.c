@@ -70,7 +70,7 @@ static const uint8_t
     ST7735_COLMOD , 1      ,  // 15: set color mode, 1 arg, no delay:
      ST7735_ColorMode_16bit },//     16-bit color
 
-#if (defined(ST7735_IS_128X128) || defined(ST7735_IS_160X128))
+#if (defined(ST7735_IS_128X128))
   init_cmds2[] = {            // Init for 7735R, part 2 (1.44" display)
     2,                        //  2 commands in list:
     ST7735_CASET  , 4      ,  //  1: Column addr set, 4 args, no delay:
@@ -134,7 +134,11 @@ void ST7735_Init(void){
 	
     ST7735_HardReset(); 
 	ST7735_ExecuteCommandList(init_cmds1);
+	
+#if (defined(ST7735_IS_128X128) || defined(ST7735_IS_160X80))
     ST7735_ExecuteCommandList(init_cmds2);
+#endif
+
 	ST7735_ExecuteCommandList(init_cmds3);
 	
     ST7735_Unselect();
