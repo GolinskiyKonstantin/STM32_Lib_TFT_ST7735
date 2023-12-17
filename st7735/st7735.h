@@ -50,7 +50,13 @@ extern C {
 			//-----------------------------------------------
 			
 		//============================================================================
-		
+			
+			// выбираем как выводить информацию через буфер кадра или попиксельно ( 1-буфер кадра, 0-попиксельный вывод ) -----
+			// через буфер быстре если много информации обнавлять за один раз ( требует много оперативки для массива )
+			// по пиксельно рисует онлайн буз буферра если информация обновляеться немного то выгодно испотзовать данный режим
+			#define FRAME_BUFFER				0
+			//-----------------------------------------------------------------------------------------------------------------
+			
 		//=== указываем порты ( если в кубе назвали их DC RES CS то тогда нечего указывать не нужно )
 		#if defined (DC_GPIO_Port)
 		#else
@@ -118,7 +124,7 @@ extern uint16_t ST7735_Y_Start;
 
 
 
-// Битовые маски настройки цветности ST7789
+// Битовые маски настройки цветности ST7735
 #define ST7735_ColorMode_12bit  0x03
 #define ST7735_ColorMode_16bit  0x05
 #define ST7735_ColorMode_18bit  0x06
@@ -262,21 +268,37 @@ void ST7735_DisplayPower(uint8_t On);
 void ST7735_DrawRectangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void ST7735_DrawRectangleFilled(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t fillcolor);
 void ST7735_DrawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void ST7735_DrawLineWithAngle(int16_t x, int16_t y, uint16_t length, double angle_degrees, uint16_t color);
 void ST7735_DrawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 void ST7735_DrawFilledTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 void ST7735_DrawPixel(int16_t x, int16_t y, uint16_t color);
 void ST7735_DrawCircleFilled(int16_t x0, int16_t y0, int16_t radius, uint16_t fillcolor);
 void ST7735_DrawCircle(int16_t x0, int16_t y0, int16_t radius, uint16_t color);
+void ST7735_DrawEllipse(int16_t x0, int16_t y0, int16_t radiusX, int16_t radiusY, uint16_t color);
+void ST7735_DrawEllipseFilled(int16_t x0, int16_t y0, int16_t radiusX, int16_t radiusY, uint16_t color);
+void ST7735_DrawEllipseFilledWithAngle(int16_t x0, int16_t y0, int16_t radiusX, int16_t radiusY, float angle_degrees, uint16_t color);
+void ST7735_DrawEllipseWithAngle(int16_t x0, int16_t y0, int16_t radiusX, int16_t radiusY, float angle_degrees, uint16_t color);
 void ST7735_DrawChar(uint16_t x, uint16_t y, uint16_t TextColor, uint16_t BgColor, uint8_t TransparentBg, FontDef_t* Font, uint8_t multiplier, unsigned char ch);
+void ST7735_DrawCharWithAngle(uint16_t x, uint16_t y, uint16_t TextColor, uint16_t BgColor, uint8_t TransparentBg, FontDef_t* Font, uint8_t multiplier, double angle_degrees, unsigned char ch);
 void ST7735_print(uint16_t x, uint16_t y, uint16_t TextColor, uint16_t BgColor, uint8_t TransparentBg, FontDef_t* Font, uint8_t multiplier, char *str);
+void ST7735_printWithAngle(uint16_t x, uint16_t y, uint16_t TextColor, uint16_t BgColor, uint8_t TransparentBg, FontDef_t* Font, uint8_t multiplier, double angle_degrees, char *str);
 void ST7735_rotation( uint8_t rotation );
 void ST7735_DrawBitmap(int16_t x, int16_t y, const unsigned char* bitmap, int16_t w, int16_t h, uint16_t color);
+void ST7735_DrawBitmapWithAngle(int16_t x, int16_t y, const unsigned char* bitmap, int16_t w, int16_t h, uint16_t color, double angle_degrees);
 void ST7735_DrawCircleHelper(int16_t x0, int16_t y0, int16_t radius, int8_t quadrantMask, uint16_t color);
 void ST7735_DrawFillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t corners, int16_t delta, uint16_t color);
 void ST7735_DrawFillRoundRect(int16_t x, int16_t y, uint16_t width, uint16_t height, int16_t cornerRadius, uint16_t color);
 void ST7735_DrawRoundRect(int16_t x, int16_t y, uint16_t width, uint16_t height, int16_t cornerRadius, uint16_t color);
 void ST7735_DrawArc(int16_t x0, int16_t y0, int16_t radius, int16_t startAngle, int16_t endAngle, uint16_t color, uint8_t thick);
 void ST7735_DrawLineThick(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color, uint8_t thick);
+void ST7735_DrawLineThickWithAngle(int16_t x, int16_t y, int16_t length, double angle_degrees, uint16_t color, uint8_t thick);
+
+
+#if FRAME_BUFFER
+	void ST7735_Update(void);
+	void ST7735_ClearFrameBuffer(void);
+#endif
+
 
 /* C++ detection */
 #ifdef __cplusplus
